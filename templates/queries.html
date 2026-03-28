@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Query Reports – Smart Inventory{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-search me-2"></i>Query Reports</h2>
+
+<div class="row g-4">
+  <!-- LEFT: Query selector sidebar -->
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white fw-semibold">
+        Select a Query
+      </div>
+      <div class="card-body p-0" style="max-height:75vh; overflow-y:auto;">
+        {% for member, qs in grouped.items() %}
+        <div class="px-3 pt-3 pb-1">
+          <div class="text-uppercase text-muted fw-semibold small border-bottom pb-1 mb-2">
+            {{ member }}
+          </div>
+        </div>
+        {% for q in qs %}
+        <a href="?query_id={{ q.id }}"
+           class="d-block px-3 py-2 text-decoration-none border-bottom
+                  {% if selected_q and selected_q.id == q.id %}bg-primary text-white{% else %}text-dark query-item{% endif %}"
+           style="font-size:.88rem;">
+          <span class="text-muted me-1 small">#{{ q.id }}</span>
+          {{ q.label }}
+        </a>
+        {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Query runner + results -->
+  <div class="col-lg-8">
+    {% if selected_q %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-dark text-white fw-semibold">
+        <span class="badge bg-secondary me-2">#{{ selected_q.id }}</span>
+        {{ selected_q.label }}
+        <span class="float-end badge bg-info text-dark">{{ selected_q.member }}</span>
+      </div>
+      <div class="card-body">
+
+        <!-- Param form if needed -->
+        {% if selected_q.param_fields %}
+        <form method="GET" class="row g-2 align-items-end mb-3">
+          <input type="hidden" name="query_id" value="{{ selected_q.id }}">
+          {% for field in selected_q.param_fields %}
+          <div class="col-auto">
+            <label class="form-label small mb-1">{{ field.label }}</label>
+            <input type="{{ field.type }}" name="{{ field.name }}"
+                   class="form-control form-control-sm"
+                   value="{{ param_values.get(field.name, '') }}"
+                   placeholder="{{ field.label }}" required>
+          </div>
+          {% endfor %}
+          <div class="col-auto">
+            <button type="submit" class="btn btn-sm btn-primary">
+              <i class="bi bi-play-fill me-1"></i>Run Query
+            </button>
+          </div>
+        </form>
+        {% else %}
+        <!-- Auto-run: no params needed, show run button for clarity -->
+        <form method="GET" class="mb-3">
+          <input type="hidden" name="query_id" value="{{ selected_q.id }}">
+          <button type="submit" class="btn btn-sm btn-primary">
+            <i class="bi bi-play-fill me-1"></i>Run Query
+          </button>
+        </form>
+        {% endif %}
+
+        <!-- Error message -->
+        {% if error_msg %}
+        <div class="alert alert-danger">
+          <strong>Query Error:</strong> {{ error_msg }}
+        </div>
+        {% endif %}
+
+        <!-- Results table -->
+        {% if result_rows %}
+        <div class="table-responsive" style="max-height:400px; overflow-y:auto;">
+          <table class="table table-sm table-striped table-hover align-middle mb-0">
+            <thead class="table-dark sticky-top">
+              <tr>
+                {% for col in result_keys %}
+                <th>{{ col }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in result_rows %}
+              <tr>
+                {% for col in result_keys %}
+                <td>
+                  {% set val = row[col] %}
+                  {% if val is none %}
+                    <span class="text-muted">NULL</span>
+                  {% else %}
+                    {{ val }}
+                  {% endif %}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-2 text-muted small">
+          {{ result_rows|length }} row(s) returned.
+        </div>
+
+        {% elif not error_msg and not selected_q.param_fields %}
+        <div class="alert alert-info mb-0">
+          No results found for this query.
+        </div>
+        {% elif not error_msg and selected_q.param_fields and param_values %}
+        <div class="alert alert-info mb-0">
+          No results found for the given parameters.
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    {% else %}
+    <div class="card shadow-sm">
+      <div class="card-body text-center py-5 text-muted">
+        <i class="bi bi-search fs-1 d-block mb-3"></i>
+        <p class="mb-1">Select a query from the list on the left to run it.</p>
+        <p class="small">40 queries available, organized by team member.</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+  .query-item:hover { background-color: #f0f4ff; }
+</style>
+{% endblock %}

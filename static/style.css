@@ -1,0 +1,53 @@
+/* Smart Inventory & Orders Tracker – Custom Styles */
+
+body {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main.container {
+  flex: 1;
+}
+
+/* Navbar brand accent */
+.navbar-brand {
+  letter-spacing: 0.5px;
+}
+
+/* Card shadow consistency */
+.card {
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.card-header {
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+/* Table improvements */
+.table thead th {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Dashboard stat cards */
+.card .fs-2 {
+  line-height: 1.1;
+}
+
+/* Sidebar query list hover handled inline via template */
+
+/* Sticky table header in query results */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Footer */
+footer {
+  font-size: 0.8rem;
+}

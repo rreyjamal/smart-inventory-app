@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} User – Smart Inventory{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white fw-semibold">
+        <i class="bi bi-person-badge me-2"></i>{{ action }} User
+      </div>
+      <div class="card-body">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Username <span class="text-danger">*</span></label>
+            <input type="text" name="username" class="form-control"
+                   value="{{ user.username if user else '' }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">
+              Password
+              {% if action == 'Edit' %}
+                <span class="text-muted small">(leave blank to keep current)</span>
+              {% else %}
+                <span class="text-danger">*</span>
+              {% endif %}
+            </label>
+            <input type="password" name="password" class="form-control"
+                   {% if action == 'Add' %}required{% endif %}>
+          </div>
+          <hr>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="is_admin" id="isAdminCheck"
+                     value="1" {{ 'checked' if user and user.admin_id else '' }}
+                     onchange="document.getElementById('privilegesRow').style.display = this.checked ? 'block' : 'none'">
+              <label class="form-check-label fw-semibold" for="isAdminCheck">
+                <i class="bi bi-shield-fill me-1 text-danger"></i>Grant Admin Privileges
+              </label>
+            </div>
+            <div class="form-text text-muted">Admins have elevated access to manage the system.</div>
+          </div>
+          <div class="mb-3" id="privilegesRow"
+               style="display: {{ 'block' if user and user.admin_id else 'none' }}">
+            <label class="form-label">Privilege Level</label>
+            <select name="privileges" class="form-select">
+              <option value="read-only"  {{ 'selected' if user and user.privileges == 'read-only'  else '' }}>read-only</option>
+              <option value="read-write" {{ 'selected' if user and user.privileges == 'read-write' else '' }}>read-write</option>
+              <option value="full"       {{ 'selected' if user and user.privileges == 'full'       else '' }}>full</option>
+            </select>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-secondary">
+              <i class="bi bi-save me-1"></i>{{ action }} User
+            </button>
+            <a href="{{ url_for('users') }}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

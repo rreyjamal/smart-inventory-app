@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}New Order – Smart Inventory{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white fw-semibold">
+        <i class="bi bi-cart3 me-2"></i>Create New Order
+      </div>
+      <div class="card-body">
+        <form method="POST" id="orderForm">
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Customer <span class="text-danger">*</span></label>
+              <select name="customer_id" class="form-select" required>
+                <option value="">— Select Customer —</option>
+                {% for c in customers %}
+                <option value="{{ c.customer_id }}">{{ c.full_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Created By (User) <span class="text-danger">*</span></label>
+              <select name="user_id" class="form-select" required>
+                <option value="">— Select User —</option>
+                {% for u in users %}
+                <option value="{{ u.user_id }}">{{ u.username }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <hr>
+          <h6 class="mb-3 fw-bold">Order Items</h6>
+
+          <div id="itemsContainer">
+            <!-- First item row (always visible) -->
+            <div class="row g-2 mb-2 item-row align-items-end">
+              <div class="col-md-7">
+                <label class="form-label small">Product</label>
+                <select name="product_id[]" class="form-select form-select-sm">
+                  <option value="">— Select Product —</option>
+                  {% for p in products %}
+                  <option value="{{ p.product_id }}" data-price="{{ p.price }}">
+                    {{ p.name }} (${{ "%.2f"|format(p.price|float) }})
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small">Quantity</label>
+                <input type="number" name="quantity[]" class="form-control form-control-sm"
+                       min="1" value="1">
+              </div>
+              <div class="col-md-2">
+                <button type="button" class="btn btn-sm btn-danger remove-row w-100"
+                        onclick="removeRow(this)" style="display:none;">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-sm btn-outline-secondary mb-3"
+                  onclick="addItemRow()">
+            <i class="bi bi-plus-circle me-1"></i>Add Another Product
+          </button>
+
+          <div class="d-flex gap-2 mt-2">
+            <button type="submit" class="btn btn-warning text-dark fw-semibold">
+              <i class="bi bi-check-circle me-1"></i>Create Order
+            </button>
+            <a href="{{ url_for('orders') }}" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Template for product select options
+  const productOptions = `{% for p in products %}<option value="{{ p.product_id }}" data-price="{{ p.price }}">{{ p.name }} (${{ "%.2f"|format(p.price|float) }})</option>{% endfor %}`;
+
+  function addItemRow() {
+    const container = document.getElementById('itemsContainer');
+    const row = document.createElement('div');
+    row.className = 'row g-2 mb-2 item-row align-items-end';
+    row.innerHTML = `
+      <div class="col-md-7">
+        <select name="product_id[]" class="form-select form-select-sm">
+          <option value="">— Select Product —</option>
+          ${productOptions}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <input type="number" name="quantity[]" class="form-control form-control-sm" min="1" value="1">
+      </div>
+      <div class="col-md-2">
+        <button type="button" class="btn btn-sm btn-danger w-100" onclick="removeRow(this)">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>`;
+    container.appendChild(row);
+  }
+
+  function removeRow(btn) {
+    const rows = document.querySelectorAll('.item-row');
+    if (rows.length > 1) {
+      btn.closest('.item-row').remove();
+    }
+  }
+</script>
+{% endblock %}

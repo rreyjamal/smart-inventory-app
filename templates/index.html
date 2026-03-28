@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – Smart Inventory{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h2>
+
+<div class="row g-4 mb-5">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-primary shadow-sm h-100">
+      <div class="card-body d-flex align-items-center gap-3">
+        <i class="bi bi-archive fs-1"></i>
+        <div>
+          <div class="fs-2 fw-bold">{{ total_products }}</div>
+          <div class="small">Total Products</div>
+        </div>
+      </div>
+      <div class="card-footer bg-primary bg-opacity-75">
+        <a href="{{ url_for('products') }}" class="text-white text-decoration-none small">
+          View Products <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-success shadow-sm h-100">
+      <div class="card-body d-flex align-items-center gap-3">
+        <i class="bi bi-people fs-1"></i>
+        <div>
+          <div class="fs-2 fw-bold">{{ total_customers }}</div>
+          <div class="small">Total Customers</div>
+        </div>
+      </div>
+      <div class="card-footer bg-success bg-opacity-75">
+        <a href="{{ url_for('customers') }}" class="text-white text-decoration-none small">
+          View Customers <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-warning shadow-sm h-100">
+      <div class="card-body d-flex align-items-center gap-3">
+        <i class="bi bi-cart3 fs-1"></i>
+        <div>
+          <div class="fs-2 fw-bold">{{ total_orders }}</div>
+          <div class="small">Total Orders</div>
+        </div>
+      </div>
+      <div class="card-footer bg-warning bg-opacity-75">
+        <a href="{{ url_for('orders') }}" class="text-white text-decoration-none small">
+          View Orders <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card text-white bg-danger shadow-sm h-100">
+      <div class="card-body d-flex align-items-center gap-3">
+        <i class="bi bi-currency-dollar fs-1"></i>
+        <div>
+          <div class="fs-2 fw-bold">${{ "%.2f"|format(total_revenue|float) }}</div>
+          <div class="small">Total Revenue</div>
+        </div>
+      </div>
+      <div class="card-footer bg-danger bg-opacity-75">
+        <a href="{{ url_for('queries') }}" class="text-white text-decoration-none small">
+          View Reports <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light fw-semibold">Quick Actions</div>
+      <div class="card-body d-flex flex-wrap gap-2">
+        <a href="{{ url_for('add_product') }}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-plus-circle me-1"></i>Add Product
+        </a>
+        <a href="{{ url_for('add_customer') }}" class="btn btn-outline-success btn-sm">
+          <i class="bi bi-plus-circle me-1"></i>Add Customer
+        </a>
+        <a href="{{ url_for('create_order') }}" class="btn btn-outline-warning btn-sm">
+          <i class="bi bi-plus-circle me-1"></i>New Order
+        </a>
+        <a href="{{ url_for('add_user') }}" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-plus-circle me-1"></i>Add User
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light fw-semibold">About This App</div>
+      <div class="card-body small text-muted">
+        <p class="mb-1"><strong>Course:</strong> CS340 – Introduction to Database Systems</p>
+        <p class="mb-1"><strong>App:</strong> Smart Inventory &amp; Orders Tracker</p>
+        <p class="mb-1"><strong>Stack:</strong> Flask · PostgreSQL (Supabase) · Bootstrap 5</p>
+        <p class="mb-0"><strong>Team:</strong> Mahmood · Abdullah AlQahtani · Suliman · Abdullah Altorifi</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
